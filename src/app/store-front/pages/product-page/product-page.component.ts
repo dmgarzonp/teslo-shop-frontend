@@ -1,0 +1,26 @@
+import { rxResource } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ProductsService } from '@products/services/products.service';
+import { ProductCarouselComponent } from "@products/components/product-carousel/product-carousel.component";
+
+@Component({
+  selector: 'app-product-page',
+  imports: [ProductCarouselComponent],
+  templateUrl: './product-page.component.html',
+})
+export class ProductPageComponent {
+  activateRoute = inject(ActivatedRoute);
+  productServices = inject(ProductsService);
+
+  productIdSlug = this.activateRoute.snapshot.params['idSlug'];
+
+  productResourse = rxResource({
+    params: () => ({ isSlug: this.productIdSlug}),
+    stream: ({ params }) => {
+      return this.productServices.getProductByIdSlug(params.isSlug)
+    },
+  })
+
+
+ }
